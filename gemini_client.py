@@ -31,3 +31,18 @@ class agent:
             return final.text
 
         return response.text
+
+    def call_gemini_for_dashboard(self, dashboard: str) -> str:
+        response = self.convo.send_message(f"Generate data to fetch {dashboard} information and display it in a format that can be used in a streamlit dashboard.")
+
+        if response.candidates[0].content.parts[0].function_call:
+            tool_call = response.candidates[0].content.parts[0].function_call
+            tool_name = tool_call.name
+
+            tool_response = call_tool(tool_name, self.session_id)
+
+            # Continue conversation with tool output
+            final = self.convo.send_message(f"Here is the result of {tool_name}:\n{tool_response}")
+            return final.text
+
+        return response.text
