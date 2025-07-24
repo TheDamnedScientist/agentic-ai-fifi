@@ -6,9 +6,8 @@ FiFi is a project located in this directory. Below is an overview of the folder 
 
 ```
 .
-├── cli_mock            # Source code files
-├── gemini_mock         # Gemini mock/real client
-├── mcp_client          # To send requests to MCP server
+├── backend/            # Source code for backend
+├── frontend/           # Source code for frontend
 ├── requirements.txt    # Python dependencies
 ├── README.md           # Project documentation
 ├── LICENSE             # License information
@@ -29,8 +28,16 @@ FiFi is a project located in this directory. Below is an overview of the folder 
     ```
 
 3. **Run the application:**
+    Run these commands from the root of the repo.
+    
+    To test mock flow, run this
     ```bash
-    python cli_gemini.py
+    python -m backend.mock_flow.cli_mock
+    ```
+
+    Run this for testing the flow with gemini integration
+    ```bash
+    python -m backend.cli_gemini
     ```
 
 ## Running Tests
