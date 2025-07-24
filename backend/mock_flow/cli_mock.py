@@ -1,15 +1,13 @@
 # cli.py
 
 import os
-from mcp_client import call_tool
-from gemini_client import agent
+from backend.mcp_client import call_tool
+from backend.mock_flow.gemini_mock import detect_tool
 
 def main():
     session_id = os.getenv("MCP_SESSION_ID")
     if not session_id:
         session_id = input("🔐 Enter your MCP session ID (first time login): ").strip()
-
-    gemini_agent = agent(session_id)
 
     print("\n💬 Welcome to your Financial Assistant (Mock Gemini CLI)\n")
     print("Type a question like:")
@@ -24,10 +22,14 @@ def main():
                 print("👋 Bye!")
                 break
 
-            response = gemini_agent.call_gemini(user_input)
+            tool = detect_tool(user_input)
+            if not tool:
+                print("🤖 Gemini: Sorry, I don't know how to answer that yet.\n")
+                continue
 
-            # result = call_tool(tool, session_id)
-            print(f"📊 Result:\n{response}\n")
+            print(f"🤖 Gemini: Calling `{tool}` tool...\n")
+            result = call_tool(tool, session_id)
+            print(f"📊 Result:\n{result}\n")
 
         except KeyboardInterrupt:
             print("\n👋 Exiting.")

@@ -1,4 +1,4 @@
-from mcp_client import list_tools, call_tool
+from backend.mcp_client import list_tools, call_tool
 import os
 import google.generativeai as genai
 
