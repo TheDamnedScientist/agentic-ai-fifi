@@ -1,4 +1,5 @@
 from backend.mcp_client import list_tools, call_tool
+from google.generativeai.types import content_types
 import os
 import google.generativeai as genai
 
@@ -15,7 +16,15 @@ class agent:
             model_name="gemini-2.0-flash",
             tools=list_tools(session_id)
         )
-        self.convo = self.model.start_chat()
+        self.convo = self.model.start_chat(
+            history=[
+                {
+                    "role": "user",
+                    "parts": ["You are a smart financial assistant. You can call multiple tools per prompt. Wait for tool responses before continuing."]
+                }
+            ],
+            enable_automatic_function_calling=True
+        )
 
     def call_gemini(self, prompt: str) -> str:
 
@@ -29,8 +38,8 @@ class agent:
                 tool_call = part.function_call
                 tool_name = tool_call.name
                 
-                if not tool_name:
-                    print("⚠️ Skipping tool call with no name\n")
+                if not tool_name:  # Handle blank or None tool name
+                    # print("⚠️ Skipping tool call with no name")
                     continue
 
                 print(f"Calling tool: {tool_name}")

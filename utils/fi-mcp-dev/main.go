@@ -30,7 +30,7 @@ func main() {
 	)
 
 	// Register the tool for fetching session information
-	s.AddTool(mcp.NewTool("whoami", mcp.WithDescription("Get current authenticated user information.")), dummyHandler)
+	s.AddTool(mcp.NewTool("whoami", mcp.WithDescription("Get current authenticated user information")), dummyHandler)
 
 	// Register tools from pkg.ToolList
 	for _, tool := range pkg.ToolList {
