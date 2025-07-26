@@ -1,37 +1,4 @@
 import streamlit as st
-"""
-This Streamlit application, "FIFI: Financial Intelligence powered by Fi", provides a visually rich dashboard for personal financial insights, including authentication, financial summaries, behavioral classification, and a chat interface.
-Main Features:
----------------
-- **Custom Theming & SVG Background:** Uses inline SVG and CSS for a stylized, banknote-themed background and modern UI elements.
-- **Authentication:** Simple username/password login system using Streamlit session state.
-- **Settings Panel:** Allows users to manage accounts, export data, connect tools, manage privacy, and log out.
-- **Financial Insights:**
-    - Net worth display.
-    - Monthly spending breakdown by category (pie chart).
-    - Behavioral spending classification (radar chart).
-    - Monthly spending trends (line chart).
-    - Credit usage over time (bar chart).
-    - Top 3 best and worst investments (horizontal bar charts).
-- **Chat Interface:** Users can interact with a mock chatbot ("FiFi") for financial queries, with prompt buttons and chat history display.
-Mock Data:
------------
-- Financial data, investment returns, and credit usage are generated with placeholder/mock values for demonstration.
-Session State:
----------------
-- Manages login state, chat history, and user input for a seamless interactive experience.
-Dependencies:
---------------
-- streamlit
-- pandas
-- numpy
-- plotly
-- datetime
-- urllib
-Usage:
--------
-Run the script with Streamlit to launch the dashboard. Authenticate with the hardcoded credentials ("alok" / "chutya") to access the main features.
-"""
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -226,9 +193,25 @@ if st.session_state.login_attempted:
     username = st.session_state.get("fifi_username", "")
     password = st.session_state.get("fifi_password", "")
     # Replace with your authentication logic!
-    if username.strip() == "alok" and password.strip() == "chutya":
+    if username.strip() == "1414141414" and password.strip() == "1414141414":
         st.session_state.logged_in = True
         st.session_state.login_failed = False
+
+        session_id = "mcp-session-594e48ea-fea1-40ef-8c52-7552dd9272af"  # Mock session ID
+        AUTH_URL = f"http://localhost:8080/mockWebPage?sessionId={session_id}"
+        st.components.v1.html(f"""
+            <script>
+                window.open('{AUTH_URL}', '_blank');
+            </script>
+        """, height=0, width=0)
+        st.markdown("""
+            <div style='text-align: center; margin-top: 2rem;'>
+                <span style='font-size: 1.5rem; color: #bfbfff; font-family: monospace; font-weight: bold;'>
+                    Successfully logged in! Redirecting...
+                </span>
+            </div>
+        """, unsafe_allow_html=True)
+
     else:
         st.session_state.logged_in = False
         st.session_state.login_failed = True
