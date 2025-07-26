@@ -5,6 +5,9 @@ import json
 import os
 from google import genai
 from google.genai.types import Tool
+from backend import firestore_client
+
+
 
 with open("gemini_api.txt", "r") as fin:
     api_key = fin.read().strip()
@@ -12,29 +15,21 @@ with open("gemini_api.txt", "r") as fin:
 # genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 client = genai.Client(api_key=api_key)
 
-history_file = Path("backend/context_store/chat_history.json")
-if history_file.exists():
-    with open(history_file, "r") as f:
-        chat_history = json.load(f)
-else:
-    chat_history = []
+# history_file = Path("backend/context_store/chat_history.json")
+# if history_file.exists():
+#     with open(history_file, "r") as f:
+#         chat_history = json.load(f)
+# else:
+#     chat_history = []
     
 agent_behavior = open("backend/context_store/behavior.txt", "r").read()
 
 class agent:
     def __init__(self, session_id: str):
         self.session_id = session_id
-        self.chat = client.chats.create(
-                    model="gemini-2.0-flash",
-                    config=genai.types.GenerateContentConfig(
-                    temperature=0,
-                    tools=[Tool(function_declarations=list_tools(session_id)),],
-                    system_instruction=agent_behavior,
-                    ),
-                    history=chat_history
-                )
         dummy_call = call_tool("whoami", self.session_id)
         res_dict: dict = eval(dummy_call)
+        self.phone_number = 1414141414
         if res_dict.get("status") == "login_required":
             login_url = res_dict["login_url"]
             print("Please open the following login URL in your browser:")
@@ -42,8 +37,25 @@ class agent:
 
             input("Press Enter after you've completed the login...")
         else:
-            self.phone_number = res_dict.get("phone_number")
+            self.phone_number = res_dict.get("phoneNumber")
+            print(self.phone_number)
+        self.fs_client = firestore_client.Client(self.phone_number)
+        self.chat = client.chats.create(
+                    model="gemini-2.0-flash",
+                    config=genai.types.GenerateContentConfig(
+                    temperature=0,
+                    tools=[Tool(function_declarations=list_tools(session_id)),],
+                    system_instruction=self.get_updated_behavior(self.fs_client),
+                    ),
+                    history=self.fs_client.get_chat_history(),
+                )
 
+    @staticmethod
+    def get_updated_behavior(fs_client: firestore_client.Client) -> str:
+        with open("backend/context_store/behavior.txt", "r") as fin:
+            fifi_behavior =  fin.read().strip()
+        context = "This is the updated context about user: " + str(fs_client.get_chat_context())
+        return fifi_behavior + "\n" + context
     def call_gemini(self, prompt: str) -> str:
 
         response = self.chat.send_message(prompt)
@@ -87,3 +99,8 @@ class agent:
             return final.text
 
         return response.text
+    def update_fs(self):
+        history = self.chat.get_history()
+        self.fs_client.store_chat_history([item.to_json_dict() for item in history])
+        context = json.load(open("tmp/mock_ctx.json"))
+        self.fs_client.store_chat_context(context)
