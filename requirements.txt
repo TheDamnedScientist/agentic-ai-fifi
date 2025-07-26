@@ -4,3 +4,7 @@ firebase-admin
 google-generativeai
 Pathlib
 requests
+pandas
+numpy
+plotly
+streamlit
