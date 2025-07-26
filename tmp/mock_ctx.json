@@ -1,0 +1,54 @@
+{
+  "profile": {
+    "name": "John Doe",
+    "age": 28,
+    "location": "India",
+    "income_level": "upper-middle",
+    "employment_status": "full-time",
+    "financial_goals": ["save for house", "retire early", "travel yearly"]
+  },
+  "financial_summary": {
+    "net_worth": {
+      "amount": 1800000,
+      "last_updated": "2025-07-20"
+    },
+    "monthly_spending": {
+      "total": 85000,
+      "categories": {
+        "groceries": 12000,
+        "subscriptions": 1500,
+        "investments": 25000,
+        "travel": 5000
+      },
+      "last_updated": "2025-07-19"
+    },
+    "credit_health": {
+      "credit_score": 785,
+      "credit_utilization": "23%",
+      "last_updated": "2025-07-18"
+    }
+  },
+  "behavior_insights": {
+    "present_bias": true,
+    "impulse_spending_triggers": ["weekends", "food delivery"],
+    "consistent_saver": true,
+    "saving_habits": ["SIPs", "monthly auto-debits"]
+  },
+  "conversation_history_summary": [
+    {
+      "timestamp": "2025-07-21T10:05:00Z",
+      "topics": ["spending insights", "reduce food delivery"],
+      "actions_suggested": ["set daily spend limit", "install budget app"]
+    },
+    {
+      "timestamp": "2025-07-22T16:30:00Z",
+      "topics": ["mutual fund portfolio"],
+      "actions_suggested": ["rebalance large-cap funds"]
+    }
+  ],
+  "assistant_notes": [
+    "User prefers concise responses.",
+    "Avoid suggesting premium cards.",
+    "Interests: fintech trends, behavioral economics."
+  ]
+}
