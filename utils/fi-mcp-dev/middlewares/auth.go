@@ -46,9 +46,9 @@ func (m *AuthMiddleware) AuthMiddleware(next server.ToolHandlerFunc) server.Tool
 
 		if toolName == "whoami" {
 			userInfo := map[string]interface{}{
-				"phoneNumber":   phoneNumber,
-				"sessionId":     sessionId,
-				"authenticated": server.ClientSessionFromContext(ctx).Initialized(),
+				"phoneNumber": phoneNumber,
+				"sessionId":   sessionId,
+				// "authenticated": server.ClientSessionFromContext(ctx).Initialized(),
 			}
 
 			jsonData, _ := json.Marshal(userInfo)

@@ -1,7 +1,11 @@
 # cli.py
 
+import json
 import os
 from backend.gemini_client import agent
+from pathlib import Path
+
+history_file = Path("backend/context_store/chat_history.json")
 
 def main():
     session_id = os.getenv("MCP_SESSION_ID")
@@ -31,6 +35,11 @@ def main():
         except KeyboardInterrupt:
             print("\n👋 Exiting.")
             break
-
+        
+    history = gemini_agent.chat.get_history()
+    json_history = [item.to_json_dict() for item in history]
+    with open(history_file, "w") as f:
+        json.dump(json_history, f, indent=2)
+        
 if __name__ == "__main__":
-    main()
+    main()  
