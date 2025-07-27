@@ -1,0 +1,19 @@
+{
+  "retirement_details": {
+    "retirement_age": 60
+  },
+  "financial_goals": {
+    "long_term": {
+      "maximize_retirement_income": "Generate a sustainable stream of income throughout retirement",
+      "achieve_financial_independence": "Accumulate enough assets to cover essential living expenses in retirement"
+    },
+    "mid_term": {
+      "increase_retirement_savings": "Increase monthly EPF contributions by 50%",
+      "build_emergency_fund": "Save 3 months' worth of essential living expenses"
+    },
+    "short_term": {
+      "reduce_credit_card_debt": "Pay off at least one credit card completely",
+      "improve_cash_flow": "Increase monthly cash flow by \u00e2\u201a\u00b95,000"
+    }
+  }
+}
