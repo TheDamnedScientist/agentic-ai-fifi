@@ -11,6 +11,13 @@ from tools import create_uuid_from_string
 FAST_API_URL = "http://127.0.0.1:8000/"
 global session_id
 
+st.set_page_config(
+    page_title="FiFi",
+    page_icon="🧠",
+    layout="centered",
+    initial_sidebar_state="auto"
+)
+
 # --- SVG Banknote as page background, fixed under all content ---
 banknote_svg = """
 <svg width="700" height="265" viewBox="0 0 700 265" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -111,19 +118,28 @@ button[kind="secondary"]:hover, button[kind="primary"]:hover {{
 
 
 # --------- HEADER AND STYLES ---------
-header_text = "FIFI: Financial Intelligence powered by Fi"
+header_main = "<b>FIFI</b>"
+header_desc = "---------- Financial Intelligence <em>powered by </em> Fi ----------"
 padding = 20
 st.markdown(f"""
 <style>
 div.fifi-header {{
     font-family: monospace;
-    font-size: 30px;
+    font-size: 38px;
     white-space: nowrap;
     overflow: hidden;
     text-align: center;
     user-select: text;
-    margin-bottom: 1rem;
+    margin-bottom: 0rem;
     color: #bfbfff;
+}}
+div.fifi-desc {{
+    font-family: monospace;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0rem;
+    color: #82b1ff;
 }}
 .my-user {{
     background: #1976d2;
@@ -168,9 +184,8 @@ div.fifi-header {{
     color: #c8e6fa;
 }}
 </style>
-<div class="fifi-header">
-    {'-' * padding} {header_text} {'-' * padding}
-</div>
+<div class="fifi-header">{header_main}</div>
+<div class="fifi-desc">{header_desc}</div>
 """, unsafe_allow_html=True)
 
 
