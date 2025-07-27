@@ -1,5 +1,3 @@
-# cli.py
-
 import json
 import os
 from backend.gemini_client import agent
@@ -14,7 +12,7 @@ def main():
 
     gemini_agent = agent(session_id)
 
-    print("\n💬 Welcome to your Financial Assistant (Mock Gemini CLI)\n")
+    print("\n💬 Welcome to your Financial Assistant\n")
     print("Type a question like:")
     print(" - What's my net worth?")
     print(" - Show me my EPF details.")
@@ -28,8 +26,6 @@ def main():
                 break
 
             response = gemini_agent.call_gemini(user_input)
-
-            # result = call_tool(tool, session_id)
             print(f"📊 Result:\n{response}\n")
 
         except KeyboardInterrupt:
@@ -38,6 +34,7 @@ def main():
         
     history = gemini_agent.chat.get_history()
     json_history = [item.to_json_dict() for item in history]
+    
     with open(history_file, "w") as f:
         json.dump(json_history, f, indent=2)
         

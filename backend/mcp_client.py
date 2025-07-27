@@ -1,5 +1,3 @@
-# mcp_client.py
-
 import requests
 import json
 
@@ -8,6 +6,8 @@ MCP_BASE_URL = "http://localhost:8080/mcp/stream"
 def list_tools(session_id: str) -> list:
     """
     List all available tools from the MCP server.
+    Args:
+        session_id (str): The session ID for the MCP server.
     """
     payload = {
         "jsonrpc": "2.0",
@@ -32,7 +32,13 @@ def list_tools(session_id: str) -> list:
     except Exception as e:
         return f"❌ Error contacting MCP server: {e}"
 
-def call_tool(tool_name: str, session_id: str) -> str:    
+def call_tool(tool_name: str, session_id: str) -> str:   
+    """
+    Call a specific tool on the MCP server.
+    Args:
+        tool_name (str): The name of the tool to call.
+        session_id (str): The session ID for the MCP server.
+    """
     payload = {
         "jsonrpc": "2.0",
         "id": 1,
