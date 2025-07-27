@@ -202,12 +202,11 @@ if "AuthDone" not in st.session_state:
 def set_login_attempted():
     st.session_state.login_attempted = True
 
-# --- Check for login attempt and handle authentication ---
+# --- Login attempt and handle authentication ---
 
 if st.session_state.login_attempted:
     username = st.session_state.get("fifi_username", "")
     password = st.session_state.get("fifi_password", "")
-    # Replace with your authentication logic!
     if username.strip() == "" and password.strip() == "":
         session_id = "mcp-session-"+ create_uuid_from_string(username.strip())
         st.session_state.logged_in = True
