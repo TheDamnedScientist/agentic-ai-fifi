@@ -18,7 +18,6 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-# --- SVG Banknote as page background, fixed under all content ---
 banknote_svg = """
 <svg width="700" height="265" viewBox="0 0 700 265" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect x="10" y="10" width="680" height="245" rx="30" fill="#284968" fill-opacity="0.1"/>
@@ -115,9 +114,8 @@ button[kind="secondary"]:hover, button[kind="primary"]:hover {{
 
 """, unsafe_allow_html=True)
 
-
-
 # --------- HEADER AND STYLES ---------
+
 header_main = "<b>FIFI</b>"
 header_desc = "---------- Financial Intelligence <em>powered by </em> Fi ----------"
 padding = 20
@@ -188,12 +186,9 @@ div.fifi-desc {{
 <div class="fifi-desc">{header_desc}</div>
 """, unsafe_allow_html=True)
 
-
 st.set_page_config(layout="wide")
 
-
 # ------------- LOGIN PAGE CONTROL -------------
-
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -204,12 +199,11 @@ if "login_attempted" not in st.session_state:
 if "AuthDone" not in st.session_state:
     st.session_state.AuthDone = False
 
-
 def set_login_attempted():
     st.session_state.login_attempted = True
 
-
 # --- Check for login attempt and handle authentication ---
+
 if st.session_state.login_attempted:
     username = st.session_state.get("fifi_username", "")
     password = st.session_state.get("fifi_password", "")
@@ -234,7 +228,7 @@ if st.session_state.login_attempted:
     else:
         st.session_state.logged_in = False
         st.session_state.login_failed = True
-    st.session_state.login_attempted = False  # Reset after processing
+    st.session_state.login_attempted = False
 
 
 if not st.session_state.logged_in:
@@ -274,7 +268,6 @@ if not st.session_state.logged_in:
             unsafe_allow_html=True
         )
 
-
     st.text_input("Username", key="fifi_username")
     st.text_input(
         "Password",
@@ -283,15 +276,14 @@ if not st.session_state.logged_in:
         on_change=set_login_attempted
     )
 
-
     st.markdown('<div class="login-btn-holder">', unsafe_allow_html=True)
     if st.button("Sign In", key="fifi_signin_btn"):
         set_login_attempted()
     st.markdown('</div></div>', unsafe_allow_html=True)
     st.stop()
 
-
 # ---------- Session State ----------
+
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "chat_input" not in st.session_state:
@@ -299,8 +291,8 @@ if "chat_input" not in st.session_state:
 if "immersive_chart" in st.session_state:
     del st.session_state["immersive_chart"]
 
-
-# ---------- Mock Data ----------
+# ---------- Mock Data ----------\
+    
 def get_financial_data():
     return {
         "net_worth": 45320,
@@ -313,6 +305,7 @@ def get_financial_data():
             "Jun": {"Shopping": 5200, "Food": 3200, "Bills": 2100, "Entertainment": 1400},
         }
     }
+    
 def classify_behavior(last_month_spends):
     total = sum(last_month_spends.values()) if last_month_spends else 1
     shopping_pct = last_month_spends.get("Shopping", 0) / total
@@ -321,16 +314,16 @@ def classify_behavior(last_month_spends):
     elif food_pct > 0.35: return "Foodie"
     elif total < 9000: return "Saver"
     else: return "Balanced"
+    
 def get_investment_data():
     best = [("S&P 500 ETF", 17.5), ("Gold", 12.2), ("Corporate Bonds", 8.9)]
     worst = [("Crypto Fund", -11.0), ("Emerging Markets", -4.5), ("Startups Fund", -1.2)]
     return best, worst
+
 def get_credit_usage():
     return [("Jan", 8200), ("Feb", 7300), ("Mar", 9500), ("Apr", 9100), ("May", 8650), ("Jun", 9900)]
 
-
 col_settings, col_insights, col_chat = st.columns([0.5, 6, 3], gap="large")
-
 
 with col_settings:
     st.markdown('<div class="settings-column column-gap-right">', unsafe_allow_html=True)
@@ -347,7 +340,6 @@ with col_settings:
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-
 data = get_financial_data()
 net_worth = data["net_worth"]
 monthly_spends = data["monthly_spends"]
@@ -357,16 +349,13 @@ df_spends.fillna(0, inplace=True)
 last_month = df_spends.index[-1]
 behavior = classify_behavior(df_spends.loc[last_month].to_dict())
 
-
 pie_colors = px.colors.sequential.Blues_r[:-2]
 line_palette = px.colors.sequential.Blues_r + px.colors.sequential.Greens_r
-
 
 with col_insights:
     st.markdown(f"<h2>💰 Net Worth: ₹{net_worth:,}</h2>", unsafe_allow_html=True)
     st.markdown(f"<h4 style='color: #82b1ff;'>📝 Your Behavior Summary: <em>{behavior}</em></h4>", unsafe_allow_html=True)
     st.markdown("---")
-
 
     col1, col2 = st.columns(2)
     with col1:
@@ -385,7 +374,6 @@ with col_insights:
         st.plotly_chart(fig_pie, use_container_width=True)
     
     with col2:
-        # Behavioral spending categories and hover descriptions
         categories = [
             "Essentials",
             "Upskill/Education",
@@ -404,11 +392,9 @@ with col_insights:
             "Payments towards loans, credit cards, mortgages, or borrowed funds"
         ]
 
-        # Generate mock values for demonstration (replace with real data as needed)
         np.random.seed(42)
         spend_values = np.random.randint(1_000, 10_000, size=len(categories))
 
-        # Radar charts require closed loops, so repeat first value/category for closure.
         categories_closed = categories + [categories[0]]
         values_closed = np.append(spend_values, spend_values[0])
         hover_texts_closed = hover_texts + [hover_texts[0]]
@@ -509,7 +495,6 @@ with col_insights:
         )
         st.plotly_chart(fig_best, use_container_width=True)
 
-
 with col_chat:
     st.markdown('<div class="column-gap-left">', unsafe_allow_html=True)
     st.markdown('<div style="text-align:center;"><h2>💬 Chat with FiFi</h2></div>', unsafe_allow_html=True)
@@ -548,4 +533,5 @@ with col_chat:
         label_visibility="collapsed",
         on_change=handle_enter
     )
+    
     st.markdown('</div>', unsafe_allow_html=True)
