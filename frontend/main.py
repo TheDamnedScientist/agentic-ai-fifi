@@ -5,7 +5,11 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import urllib.parse
+import requests
+from tools import create_uuid_from_string
 
+FAST_API_URL = "http://127.0.0.1:8000/"
+global session_id
 
 # --- SVG Banknote as page background, fixed under all content ---
 banknote_svg = """
@@ -182,6 +186,8 @@ if "login_failed" not in st.session_state:
     st.session_state.login_failed = False
 if "login_attempted" not in st.session_state:
     st.session_state.login_attempted = False
+if "AuthDone" not in st.session_state:
+    st.session_state.AuthDone = False
 
 
 def set_login_attempted():
@@ -193,24 +199,22 @@ if st.session_state.login_attempted:
     username = st.session_state.get("fifi_username", "")
     password = st.session_state.get("fifi_password", "")
     # Replace with your authentication logic!
-    if username.strip() == "1414141414" and password.strip() == "1414141414":
+    if username.strip() == "" and password.strip() == "":
+        session_id = "mcp-session-"+ create_uuid_from_string(username.strip())
         st.session_state.logged_in = True
         st.session_state.login_failed = False
-
-        session_id = "mcp-session-594e48ea-fea1-40ef-8c52-7552dd9272af"  # Mock session ID
-        AUTH_URL = f"http://localhost:8080/mockWebPage?sessionId={session_id}"
-        st.components.v1.html(f"""
-            <script>
-                window.open('{AUTH_URL}', '_blank');
-            </script>
-        """, height=0, width=0)
-        st.markdown("""
-            <div style='text-align: center; margin-top: 2rem;'>
-                <span style='font-size: 1.5rem; color: #bfbfff; font-family: monospace; font-weight: bold;'>
-                    Successfully logged in! Redirecting...
-                </span>
-            </div>
-        """, unsafe_allow_html=True)
+        # st.components.v1.html(f"""
+        #     <script>
+        #         window.open('{AUTH_URL}', '_blank');
+        #     </script>
+        # """, height=0, width=0)
+        # st.markdown("""
+        #     <div style='text-align: center; margin-top: 2rem;'>
+        #         <span style='font-size: 1.5rem; color: #bfbfff; font-family: monospace; font-weight: bold;'>
+        #             Successfully logged in! Redirecting...
+        #         </span>
+        #     </div>
+        # """, unsafe_allow_html=True)
 
     else:
         st.session_state.logged_in = False
@@ -494,16 +498,21 @@ with col_insights:
 with col_chat:
     st.markdown('<div class="column-gap-left">', unsafe_allow_html=True)
     st.markdown('<div style="text-align:center;"><h2>💬 Chat with FiFi</h2></div>', unsafe_allow_html=True)
-
+    if not st.session_state.AuthDone:
+        resp = requests.post(FAST_API_URL+"init_gemini/", json={"session_id": "mcp-session-f6f79a50-86f1-f092-3b1d-fc3c603b6e36"}).json()
+        st.session_state.chat_history.append({"role": "bot", "message": resp["text"]})
+        st.session_state.AuthDone = True
+    # st.stop()
     prompts = ["How did I spend this weekend?", "Show me top expenses", "Suggest a saving goal"]
     prompt_cols = st.columns(len(prompts))
     for i, prompt in enumerate(prompts):
         with prompt_cols[i]:
             if st.button(prompt, key=f"prompt_{i}"):
                 st.session_state.chat_history.append({"role": "user", "message": prompt})
-                st.session_state.chat_history.append({"role": "bot", "message": f"Placeholder response to: '{prompt}'"})
+                resp = requests.post(FAST_API_URL+"send_message/", json={"msg": prompt}).json()
+                st.session_state.chat_history.append({"role": "bot", "message": resp["text"]})
     chat_html = '<div class="scrollbox">'
-    for msg in st.session_state.chat_history[-7:]:
+    for msg in st.session_state.chat_history:
         if msg["role"] == "user":
             chat_html += f'<div class="my-user">{msg["message"]}</div>'
         else:
@@ -514,7 +523,8 @@ with col_chat:
         text = st.session_state.chat_input.strip()
         if text:
             st.session_state.chat_history.append({"role": "user", "message": text})
-            st.session_state.chat_history.append({"role": "bot", "message": f"FiFi says: Placeholder response to: '{text}'"})
+            resp = requests.post(FAST_API_URL+"send_message/", json={"msg": text}).json()
+            st.session_state.chat_history.append({"role": "bot", "message": resp["text"]})
         st.session_state.chat_input = ""
     st.text_input(
         "Type your message:",

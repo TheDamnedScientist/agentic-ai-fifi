@@ -10,6 +10,10 @@ class Client:
         self.db = firestore.client(database_id="fifi-users-info")
         self.user_id = str(user_id)
 
+    def store_session_id(self, session_id):
+        doc_ref = self.db.collection("users").document(self.user_id)
+        doc_ref.set({"session_id": session_id})    
+
     def store_chat_history(self, history: list):
         doc_ref = self.db.collection("users").document(self.user_id)
         doc_ref.set({"chat_history": history}, merge=True)
