@@ -7,8 +7,6 @@ from google import genai
 from google.genai.types import Tool
 from backend import firestore_client
 
-
-
 with open("gemini_api.txt", "r") as fin:
     api_key = fin.read().strip()
     
@@ -68,7 +66,7 @@ class agent:
                 tool_call = part.function_call                
                 tool_name = tool_call.name
                 
-                if not tool_name:  # Handle blank or None tool name
+                if not tool_name:
                     continue
 
                 print(f"Calling tool: {tool_name}")
@@ -94,7 +92,6 @@ class agent:
 
             tool_response = call_tool(tool_name, self.session_id)
 
-            # Continue conversation with tool output
             final = self.chat.send_message(f"Here is the result of {tool_name}:\n{tool_response}")
             return final.text
 
