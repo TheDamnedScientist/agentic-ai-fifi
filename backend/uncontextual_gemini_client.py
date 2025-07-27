@@ -7,20 +7,10 @@ from google import genai
 from google.genai.types import Tool
 from backend import firestore_client
 
-
-
 with open("gemini_api.txt", "r") as fin:
     api_key = fin.read().strip()
-    
-# genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
-client = genai.Client(api_key=api_key)
 
-# history_file = Path("backend/context_store/chat_history.json")
-# if history_file.exists():
-#     with open(history_file, "r") as f:
-#         chat_history = json.load(f)
-# else:
-#     chat_history = []
+client = genai.Client(api_key=api_key)
     
 agent_behavior = open("backend/context_store/behavior.txt", "r").read()
 
@@ -32,12 +22,11 @@ class agent:
         self.phone_number = 1414141414
         if res_dict.get("status") == "login_required":
             login_url = res_dict["login_url"]
-            print("Please open the following login URL in your browser:")
-            print(login_url)
-
-            input("Press Enter after you've completed the login...")
+            msg = {"text": f"Please open the following login URL in your browser: {login_url}"}
+            print(msg["text"])
         else:
             self.phone_number = res_dict.get("phoneNumber")
+            msg = {"text": f"user: {self.phone_number} already logged in."}
             print(self.phone_number)
         self.fs_client = firestore_client.Client(self.phone_number)
         self.chat = client.chats.create(
@@ -49,6 +38,7 @@ class agent:
                     ),
                     history=self.fs_client.get_chat_history(),
                 )
+        self.login_status = msg 
 
     @staticmethod
     def get_updated_behavior(fs_client: firestore_client.Client) -> str:

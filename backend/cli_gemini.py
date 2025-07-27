@@ -31,7 +31,8 @@ def main():
         except KeyboardInterrupt:
             print("\n👋 Exiting.")
             break
-        
+    
+    gemini_agent.update_fs()
     history = gemini_agent.chat.get_history()
     json_history = [item.to_json_dict() for item in history]
     
